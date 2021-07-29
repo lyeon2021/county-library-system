@@ -1,11 +1,41 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include<windows.h>
+#include<string.h>
 /****************
 lyeon ndegwa
 community lab project
 23/6/2021
 **********************/
+int menu (){
+
+ //Navigation menu
+ int action;
+    do {
+    printf("1. Add user\n");
+    printf("2. Add book\n");
+    printf("3. Exit\n");
+    printf("Select action(1-3): ");
+    scanf("%d",&action);
+
+    //Validate input
+    if (action < 1 || action > 3){
+        printf("Invalid action.Try again\n");
+        Sleep(2000);
+        system( "cls");
+    }
+
+    }while(action < 1 || action > 3);
+
+
+
+
+
+
+
+    return action;
+
+}
 
 
 // Function prototype
@@ -13,6 +43,7 @@ community lab project
 void execute_action(int action);
 void close();
 int menu();
+void Add_book();
 
 int main()
 {
@@ -36,7 +67,12 @@ case 1:
     break;
 
 case 2:
-    printf("Adding a book..\n");
+    printf("1.Computer\n");
+    printf("2.Business\n");
+    printf("3.Novel\n");
+    printf("4.Back to main menu\n");
+    printf("Select action:");
+
     break;
 
 case 3:
@@ -51,38 +87,3 @@ default:
 }
 
 
-void close(){
-
-printf("Thank you for using the system\n");
-
-printf("Bye\n");
-Sleep(5000);
-
-exit(0);
-
-}
-
-
-int menu (){
-
- //Navigation menu
- int action;
-    do {
-    printf("1. Add user\n");
-    printf("2. Add book\n");
-    printf("3. Exit\n");
-    printf("Select action(1-3): ");
-    scanf("%d",&action);
-
-    //Validate input
-    if (action < 1 || action > 3){
-        printf("Invalid action.Try again\n");
-        Sleep(2000);
-        system( "cls");
-    }
-
-    }while(action < 1 || action > 3);
-
-    return action;
-
-}
