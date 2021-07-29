@@ -27,13 +27,7 @@ int menu (){
 
     }while(action < 1 || action > 3);
 
-
-
-
-
-
-
-    return action;
+	 return action;
 
 }
 
@@ -43,7 +37,7 @@ int menu (){
 void execute_action(int action);
 void close();
 int menu();
-void Add_book();
+
 
 int main()
 {
@@ -58,12 +52,15 @@ int main()
 
     return 0;
 }
-void execute_action(int action) {
+void execute_action(int action){
 
 switch(action) {
 
 case 1:
-    printf("Adding a user..\n");
+    printf("Enter your name:\n");
+    scanf("%d",&action);
+    printf("User added....");
+
     break;
 
 case 2:
@@ -71,12 +68,15 @@ case 2:
     printf("2.Business\n");
     printf("3.Novel\n");
     printf("4.Back to main menu\n");
-    printf("Select action:");
+    printf("Select action(1-4):");
+    scanf("%d",&action);
+
 
     break;
 
 case 3:
     close();
+    printf("*****Good Bye*****");
     break;
 
 default:
@@ -85,5 +85,6 @@ default:
 
 
 }
+
 
 
