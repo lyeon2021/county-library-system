@@ -24,6 +24,14 @@ struct user {
     int is_staff;
 };
 
+struct book {
+    char title[100];
+    char author[100];
+    int copies;
+    int year;
+
+};
+
 // Function prototype
 
 void execute_action(int action);
@@ -31,8 +39,8 @@ void close();
 int menu();
 void add_user();
 void view_users();
-void delete_users();
-void update_users();
+void add_book();
+void view_books();
 
 int main()
 {
@@ -46,15 +54,9 @@ int main()
         getch ();
         system("cls");
     }
-
-
-
-    action = menu();
-    execute_action(action);
-
     return 0;
 }
-
+//Actions
 void execute_action(int action){
 switch(action) {
 case 1:
@@ -66,10 +68,14 @@ case 2:
 break;
 
 case 3:
-    printf("adding book\n");
+    add_book();
     break;
 
 case 4:
+    view_books();
+    break;
+
+case 5:
     close();
     printf("*****Good Bye*****");
     break;
@@ -80,9 +86,10 @@ default:
 
 
 }
+//Exit notice
 void close() {
-printf("Thank you for using the system\n");
-printf("Bye");
+printf("***Thank you for using the system***\n");
+printf("--GoodBye----");
 Sleep(5000);
 exit(0);
 }
@@ -97,22 +104,24 @@ int menu (){
     printf("1. Add user\n");
     printf("2.view all users\n");
     printf("3. Add book\n");
-    printf("4. Exit\n");
-    printf("Select action(1-4): ");
+    printf("4.View all books\n");
+    printf("5. Exit\n");
+    printf("Select action(1-5): ");
     scanf("%d",&action);
 
     //Validate input
-    if (action < 1 || action > 4){
+    if (action < 1 || action > 5){
         printf("Invalid action.Try again\n");
         Sleep(2000);
         system( "cls");
     }
 
-    }while(action < 1 || action > 4);
+    }while(action < 1 || action > 5);
 
 	 return action;
 
 }
+//add user
 void add_user(){
 struct user u;
 FILE *fp;
@@ -136,7 +145,7 @@ fclose(fp);
 printf("user successfully added\n");
 
 }
-
+//view user
 void view_users() {
     struct user u;
     FILE *fp;
@@ -152,6 +161,46 @@ void view_users() {
         printf("%8d %20s %13s %1d\n",u.id,u.name,u.tel,u.is_staff);
     }
     fclose(fp);
+}
+//add book
+void add_book(){
+    struct book c;
+    FILE *fp;
+    if ((fp=fopen("books","ab"))==NULL){
+    printf("cannot open file.\n");
+    exit(1);
+}
+printf("Title: ");
+getchar();
+gets(c.title);
+printf("Author: ");
+scanf("%s",c.author);
+printf("Copies: ");
+scanf("%d",&c.copies);
+
+
+fwrite(&c, sizeof(struct book),1,fp);
+fclose(fp);
+printf("Book successfully added\n");
+
+}
+//view books
+void view_books(){
+ struct book c;
+    FILE *fp;
+
+    fp = fopen("books","rb");
+    if (!fp) {
+        printf("Unable to open file");
+        exit(0);
+    }
+    printf("Title\t\tAuthor\t\t\t\tcopies");
+    while(!feof(fp)) {
+        fread(&c, sizeof(struct book), 1, fp);
+        printf("%8s %20s %13d\n",c.title,c.author,c.copies);
+    }
+    fclose(fp);
+
 }
 
 
