@@ -28,7 +28,7 @@ struct book {
     char title[100];
     char author[100];
     int copies;
-    int year;
+    int id;
 
 };
 
@@ -41,6 +41,8 @@ void add_user();
 void view_users();
 void add_book();
 void view_books();
+void delete_books();
+
 
 int main()
 {
@@ -76,6 +78,10 @@ case 4:
     break;
 
 case 5:
+    delete_books();
+    break;
+
+case 6:
     close();
     printf("*****Good Bye*****");
     break;
@@ -96,32 +102,47 @@ exit(0);
 
 int menu (){
 
- //Navigation menu
+ //welcome notice
  int action;
     do {
     printf("\t county library management system!\n");
+    printf("\n\n\n\n\n");
+    printf("\n\t\t\t  =====================================================\n");
+    printf("\n\t\t\t  *      =-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=");
+    printf("\n\t\t\t  *      =                 WELCOME                   =");
+    printf("\n\t\t\t  *      =                   TO                      =");
+    printf("\n\t\t\t  *      =                 LIBRARY                   =");
+    printf("\n\t\t\t  *      =               MANAGEMENT                  =");
+    printf("\n\t\t\t  *      =                 SYSTEM                    =");
+    printf("\n\t\t\t  *      =-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=");
+    printf("\n\t\t\t  =====================================================\n");
+    printf("\n\n\n\t\t\t Press any key to continue.....\n");
+    getch();
+
+    //navigation menu
     printf("welcome lyeon\n");
     printf("1. Add user\n");
     printf("2.view all users\n");
     printf("3. Add book\n");
     printf("4.View all books\n");
-    printf("5. Exit\n");
-    printf("Select action(1-5): ");
+    printf("5.Delete book\n");
+    printf("6. Exit\n");
+    printf("Select action(1-6): ");
     scanf("%d",&action);
 
     //Validate input
-    if (action < 1 || action > 5){
+    if (action < 1 || action > 6){
         printf("Invalid action.Try again\n");
         Sleep(2000);
         system( "cls");
     }
 
-    }while(action < 1 || action > 5);
+    }while(action < 1 || action > 6);
 
 	 return action;
 
 }
-//add user
+//Add user
 void add_user(){
 struct user u;
 FILE *fp;
@@ -155,14 +176,14 @@ void view_users() {
         printf("Unable to open file");
         exit(0);
     }
-    printf("id\t\tName\t\t\t\tPhone Number Is Staff\n");
+    printf("id\t\tName\t\tPhone Number\t\tIs Staff\n");
     while(!feof(fp)) {
         fread(&u, sizeof(struct user), 1, fp);
         printf("%8d %20s %13s %1d\n",u.id,u.name,u.tel,u.is_staff);
     }
     fclose(fp);
 }
-//add book
+//Add book
 void add_book(){
     struct book c;
     FILE *fp;
@@ -175,6 +196,8 @@ getchar();
 gets(c.title);
 printf("Author: ");
 scanf("%s",c.author);
+printf("Book ID NO  = ");
+scanf("%u",&c.id);
 printf("Copies: ");
 scanf("%d",&c.copies);
 
@@ -194,13 +217,82 @@ void view_books(){
         printf("Unable to open file");
         exit(0);
     }
-    printf("Title\t\tAuthor\t\t\t\tcopies");
+    printf("Title\t\tAuthor\t\t\t\tcopies\tid number");
     while(!feof(fp)) {
         fread(&c, sizeof(struct book), 1, fp);
-        printf("%8s %20s %13d\n",c.title,c.author,c.copies);
+        printf("%8s %20s %13d %24u\n",c.title,c.author,c.copies,c.id);
     }
     fclose(fp);
 
 }
+
+//Delete book
+void delete_books() //displaying only deleting books function
+  {
+     struct book c;
+    FILE *fp;
+    system("cls");
+    int d;
+    char findbook;
+    char another = 'y';
+    while (another == 'y') //infinite loop
+    {
+      system("cls");
+
+      printf("Enter the Book ID to  delete:");
+      scanf("%d", & d);
+       fp = fopen("books","rb");
+      rewind(fp);
+      while (fread( & c, sizeof(struct book), 1, fp) == 1) {
+        if (c.id == d) {
+          printf("The book record is available\n\n\n\n");
+
+          printf("Book title is %s\n\n", c.title);
+
+          printf("Author name is %s\n\n", c.author);
+          findbook = 't';
+        }
+      }
+      if (findbook != 't') {
+
+        printf("No record is found modify the search\n\n");
+        if (getch())
+          menu();
+      }
+      if (findbook == 't') {
+
+        printf("Do you want to delete it?(Y/N):\n");
+        if (getch() == 'y') {
+          fp = fopen("test.dat", "wb+"); //temporary file for delete
+          rewind(fp);
+          while (fread( & c, sizeof(struct book), 1, fp) == 1) {
+            if (c.id!= d) {
+              fseek(fp, 0, SEEK_CUR);
+              fwrite( & c, sizeof(struct book), 1, fp); //write all in tempory file except that
+            } //we want to delete
+          }
+          fclose(fp);
+          fclose(fp);
+          remove("library.dat");
+          rename("test.dat", "library.dat"); //copy all item from temporary file to fp except that
+          fp = fopen("library.dat", "rb+"); //we want to delete
+          if (findbook == 't') {
+
+            printf("The record is sucessfully deleted\n");
+
+            printf("\nDelete another record?(Y/N)");
+          }
+        } else
+          menu();
+        fflush(stdin);
+        another = getch();
+      }
+    }
+
+    menu();
+  }
+
+
+
 
 
