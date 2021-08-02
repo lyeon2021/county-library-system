@@ -39,6 +39,7 @@ void close();
 int menu();
 void add_user();
 void view_users();
+void delete_user();
 void add_book();
 void view_books();
 void delete_books();
@@ -68,20 +69,23 @@ break;
 case 2:
     view_users();
 break;
-
 case 3:
-    add_book();
+    delete_user();
     break;
 
 case 4:
-    view_books();
+    add_book();
     break;
 
 case 5:
-    delete_books();
+    view_books();
     break;
 
 case 6:
+    delete_books();
+    break;
+
+case 7:
     close();
     printf("*****Good Bye*****");
     break;
@@ -96,7 +100,7 @@ default:
 void close() {
 printf("***Thank you for using the system***\n");
 printf("--GoodBye----");
-Sleep(5000);
+Sleep(2000);
 exit(0);
 }
 
@@ -123,21 +127,22 @@ int menu (){
     printf("welcome lyeon\n");
     printf("1. Add user\n");
     printf("2.view all users\n");
-    printf("3. Add book\n");
-    printf("4.View all books\n");
-    printf("5.Delete book\n");
-    printf("6. Exit\n");
-    printf("Select action(1-6): ");
+    printf("3.Delete user\n");
+    printf("4. Add book\n");
+    printf("5.View all books\n");
+    printf("6.Delete book\n");
+    printf("7. Exit\n");
+    printf("Select action(1-7): ");
     scanf("%d",&action);
 
     //Validate input
-    if (action < 1 || action > 6){
+    if (action < 1 || action > 7){
         printf("Invalid action.Try again\n");
         Sleep(2000);
         system( "cls");
     }
 
-    }while(action < 1 || action > 6);
+    }while(action < 1 || action > 7);
 
 	 return action;
 
@@ -290,6 +295,72 @@ void delete_books() //displaying only deleting books function
     }
 
     menu();
+  }
+
+  //Delete user
+  void delete_user(){
+   struct user u;
+    FILE *fp;
+    system("cls");
+    int d;
+    char finduser;
+    char another = 'y';
+    while (another == 'y') //infinite loop
+    {
+      system("cls");
+
+      printf("Enter user id  delete:");
+      scanf("%d", & d);
+       fp = fopen("users","rb");
+      rewind(fp);
+      while (fread( & u, sizeof(struct user), 1, fp) == 1) {
+        if (u.id == d) {
+          printf("The user record is available\n\n\n\n");
+
+          printf("user name is %s\n\n", u.name);
+
+          printf("User tel is %s\n\n", u.tel);
+          finduser = 't';
+        }
+      }
+      if (finduser != 't') {
+
+        printf("No record is found modify the search\n\n");
+        if (getch())
+          menu();
+      }
+      if (finduser == 't') {
+
+        printf("Do you want to delete it?(Y/N):\n");
+        if (getch() == 'y') {
+          fp = fopen("test.dat", "wb+"); //temporary file for delete
+          rewind(fp);
+          while (fread( & u, sizeof(struct user), 1, fp) == 1) {
+            if (u.id!= d) {
+              fseek(fp, 0, SEEK_CUR);
+              fwrite( & u, sizeof(struct user), 1, fp); //write all in tempory file except that
+            } //we want to delete
+          }
+          fclose(fp);
+          fclose(fp);
+          remove("library.dat");
+          rename("test.dat", "library.dat"); //copy all item from temporary file to fp except that
+          fp = fopen("library.dat", "rb+"); //we want to delete
+          if (finduser == 't') {
+
+            printf("The record is sucessfully deleted\n");
+
+            printf("\nDelete another record?(Y/N)");
+          }
+        } else
+          menu();
+        fflush(stdin);
+        another = getch();
+      }
+    }
+
+    menu();
+
   }
 
 
